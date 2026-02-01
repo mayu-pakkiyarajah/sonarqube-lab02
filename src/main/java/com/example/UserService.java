@@ -2,30 +2,36 @@ package com.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
+import java.util.logging.Logger;
 
 public class UserService {
 
     // SECURITY ISSUE: Hardcoded credentials
     private String password = "admin123";
 
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
+
     // VULNERABILITY: SQL Injection
-    public void findUser(String username) throws Exception {
+    public void findUser(String username) throws java.sql.SQLException {
 
-        Connection conn =
-            DriverManager.getConnection("jdbc:mysql://localhost/db",
-                    "root", password);
+        String sql = "SELECT id, name, email FROM users WHERE name = ?";
 
-        Statement st = conn.createStatement();
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/db",
+                "root", password);
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String query =
-            "SELECT * FROM users WHERE name = '" + username + "'";
+            ps.setString(1, username);
 
-        st.executeQuery(query);
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    // process result if needed
+                }
+            }
+        }
     }
 
     // SMELL: Unused method
     public void notUsed() {
-        System.out.println("I am never called");
+        LOGGER.info("I am never called");
     }
 }
