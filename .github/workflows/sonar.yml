@@ -39,5 +39,5 @@ jobs:
       run: |
         mvn sonar:sonar \
           -Dsonar.projectKey=mayuravelp214131v_lab-02 \
-          -Dsonar.organization=mayuravelp214131vY \
+          -Dsonar.organization=mayuravelp214131v \
           -Dsonar.host.url=https://sonarcloud.io
